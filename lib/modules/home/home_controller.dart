@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_exemple/repository/database/firebase/firebase_database.dart';
+import 'package:firebase_exemple/repository/database/firebase_firestone/firebase_firestore.dart';
+
 import 'package:firebase_exemple/repository/models/nota.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
