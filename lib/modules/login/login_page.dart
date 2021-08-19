@@ -1,91 +1,101 @@
-import 'package:firebase_exemple/modules/register/resgister_page.dart';
-import 'package:firebase_exemple/modules/shared/widgets/form_widget/form_widget.dart';
+import 'package:firebase_exemple/modules/login/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'login_controller.dart';
 
-class LoginPage extends GetView<LoginController> {
+class LoginPage extends StatelessWidget {
+  final controller = Get.put(LoginController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('LoginPage'),
+        elevation: 0,
+        toolbarHeight: 80,
+        title: Obx(() => Text(controller.titulo.value)),
+        actions: [
+          TextButton(
+            child: Obx(() => Text(controller.appBarButton.value)),
+            onPressed: controller.toogleRegistrar,
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all<Color>(Colors.white70),
+            ),
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Form(
-              key: controller.formKeyLogin,
-              child: Column(
-                children: [
-                  FormWidget(
-                    label: 'Email',
-                    controller: controller.emailController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Informe um Email';
-                      }
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  FormWidget(
-                    label: 'Senha',
-                    controller: controller.senhaController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Informe uma senha';
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.95,
-              height: 55,
-              child: OutlinedButton(
-                onPressed: () {
-                  if (controller.formKeyLogin.currentState!.validate()) {
-                    if (controller.isLogin.value) {
-                      controller.login();
-                    }
-                  }
-                },
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Get.to(() => ResgisterPage());
-                  },
-                  child: Text(
-                    'Cadastrar-se',
-                    style: TextStyle(
-                      color: Colors.red,
+      body: Obx(
+        () => controller.isLoading.value
+            ? Center(child: CircularProgressIndicator())
+            : Form(
+                key: controller.formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(24),
+                      child: TextFormField(
+                        controller: controller.emailController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Email',
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Informe o email corretamente!';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 24.0),
+                      child: TextFormField(
+                        controller: controller.senhaController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Senha',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Informa sua senha!';
+                          } else if (value.length < 6) {
+                            return 'Sua senha deve ter no mínimo 6 caracteres';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (controller.formKey.currentState!.validate()) {
+                            if (controller.isLogin.value) {
+                              controller.login();
+                            } else {
+                              controller.register();
+                            }
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.check),
+                            Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Obx(() => Text(
+                                  controller.botaoPrincipal.value,
+                                  style: TextStyle(fontSize: 20))),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.red,
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
       ),
     );
   }

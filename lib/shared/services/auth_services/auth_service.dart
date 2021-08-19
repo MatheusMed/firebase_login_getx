@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_exemple/modules/home/home_page.dart';
 import 'package:get/get.dart';
 
 class AuthService extends GetxController {
@@ -38,7 +37,6 @@ class AuthService extends GetxController {
   createUser(String email, String senha) async {
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: senha);
-      Get.offAll(() => HomePage());
     } catch (e) {
       showSnack('Erro ao Cadastrar', e.toString());
     }
@@ -48,7 +46,6 @@ class AuthService extends GetxController {
   login(String email, String senha) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: senha);
-      Get.offAll(() => HomePage());
     } catch (e) {
       showSnack('Erro no Login', e.toString());
     }
